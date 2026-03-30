@@ -1,6 +1,9 @@
 "use client";
-import { useAuthContext } from "@/context/AuthProvider";
+
 import { authService } from "@/services/authService";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   Box,
   Button,
@@ -9,15 +12,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
-  const { login } = useAuthContext();
-
   const [formData, setFormData] = useState({
+    fullName: "",
     email: "",
     password: "",
   });
@@ -28,18 +26,16 @@ export default function LoginPage() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
-
-  async function handleSubmit(e) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      await authService.login(formData);
-      await login();
-
-      toast.success("Giriş başarılı!");
-      router.push("/");
+      await authService.register(formData);
+      toast.success("Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...");
+      router.push("/login");
     } catch (error) {
-      toast.error(error.message || "Giriş başarısız!");
+      console.error("Registration failed:", error);
+      toast.error("Kayıt sırasında hata oluştu.");
     } finally {
       setIsLoading(false);
     }
@@ -55,14 +51,23 @@ export default function LoginPage() {
         }}
       >
         <Typography variant="h4" fontWeight={700} mb={1}>
-          Giriş Yap
+          Kayıt Ol
         </Typography>
 
         <Typography variant="body1" color="text.secondary" mb={4}>
-          Hesabına giriş yaparak öğrenmeye devam et.
+          Yeni hesap oluşturarak öğrenmeye hemen başla.
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
+          <TextField
+            fullWidth
+            label="Ad Soyad"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            margin="normal"
+          />
+
           <TextField
             fullWidth
             label="E-posta"
@@ -91,7 +96,7 @@ export default function LoginPage() {
             disabled={isLoading}
             sx={{ mt: 3 }}
           >
-            {isLoading ? "Giriş yapılıyor..." : "Giriş Yap"}
+            {isLoading ? "Kayıt olunuyor..." : "Kayıt Ol"}
           </Button>
         </Box>
       </Paper>

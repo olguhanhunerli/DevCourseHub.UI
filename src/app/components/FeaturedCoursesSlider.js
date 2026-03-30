@@ -12,7 +12,7 @@ function NextArrow(props) {
       onClick={onClick}
       sx={{
         position: "absolute",
-        right: -18,
+        right: -45,
         top: "40%",
         transform: "translateY(-50%)",
         zIndex: 2,
@@ -36,7 +36,7 @@ function PrevArrow(props) {
       onClick={onClick}
       sx={{
         position: "absolute",
-        left: -18,
+        left: -45,
         top: "40%",
         transform: "translateY(-50%)",
         zIndex: 2,
