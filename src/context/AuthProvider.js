@@ -1,20 +1,25 @@
 "use client";
 
 import { authService } from "@/services/authService";
-
-const { createContext, useState, useEffect, useContext } = require("react");
+import { createContext, useState, useEffect, useContext } from "react";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function fetchMe() {
     try {
-      const me = await authService.fetchMe();
+      setLoading(true);
+      console.log("fetchMe başladı");
+
+      const me = await authService.getMe();
+      console.log("fetchMe başarılı:", me);
+
       setUser(me);
-    } catch {
+    } catch (error) {
+      console.log("fetchMe hata:", error);
       setUser(null);
     } finally {
       setLoading(false);
@@ -22,12 +27,17 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    console.log("AuthProvider mount oldu");
     fetchMe();
   }, []);
 
-  async function login() {
+  async function login(payload) {
+    console.log("login başladı");
+    await authService.login(payload);
+    console.log("login başarılı, fetchMe çağrılıyor");
     await fetchMe();
   }
+
   async function logout() {
     await authService.logout();
     setUser(null);
@@ -35,7 +45,14 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, logout, fetchMe, isAuthenticated: !!user }}
+      value={{
+        user,
+        loading,
+        login,
+        logout,
+        fetchMe,
+        isAuthenticated: !!user,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -14,6 +14,8 @@ export const authService = {
     });
   },
   getMe() {
-    return apiFetch("/api/auth/me");
+    return apiFetch("/api/auth/me", {
+      method: "GET",
+    });
   },
 };

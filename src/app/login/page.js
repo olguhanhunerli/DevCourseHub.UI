@@ -30,11 +30,10 @@ export default function LoginPage() {
   }
 
   async function handleSubmit(e) {
-    event.preventDefault();
+    e.preventDefault();
     try {
       setIsLoading(true);
-      await authService.login(formData);
-      await login();
+      await login(formData);
 
       toast.success("Giriş başarılı!");
       router.push("/");
