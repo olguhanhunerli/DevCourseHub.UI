@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -12,18 +14,18 @@ import {
   Stack,
   TextField,
   Typography,
-  Button,
 } from "@mui/material";
 import { toast } from "sonner";
 import { courseService } from "@/services/courseService";
-import CourseCard from "../components/CourseCard";
+import ManageCourseCard from "../components/ManageCourseCard";
 
 const CATEGORY_OPTIONS = ["Frontend", "Backend", "Database", "Security"];
 const LEVEL_OPTIONS = ["Beginner", "Intermediate", "Advanced"];
 
-export default function CoursesPage() {
+export default function MyCoursesPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoadingId, setActionLoadingId] = useState(null);
 
   const [filters, setFilters] = useState({
     Search: "",
@@ -40,10 +42,10 @@ export default function CoursesPage() {
     totalPages: 1,
   });
 
-  async function fetchCourses(customFilters = filters) {
+  async function fetchMyCourses(customFilters = filters) {
     try {
       setLoading(true);
-      const data = await courseService.getCourses(customFilters);
+      const data = await courseService.getMyCourses(customFilters);
 
       setCourses(data?.items || []);
       setPagination({
@@ -60,7 +62,7 @@ export default function CoursesPage() {
   }
 
   useEffect(() => {
-    fetchCourses(filters);
+    fetchMyCourses(filters);
   }, []);
 
   function handleFilterChange(field, value) {
@@ -72,7 +74,7 @@ export default function CoursesPage() {
   }
 
   async function handleApplyFilters() {
-    await fetchCourses(filters);
+    await fetchMyCourses(filters);
   }
 
   async function handleClearFilters() {
@@ -85,7 +87,7 @@ export default function CoursesPage() {
     };
 
     setFilters(clearedFilters);
-    await fetchCourses(clearedFilters);
+    await fetchMyCourses(clearedFilters);
   }
 
   async function handlePageChange(_, page) {
@@ -95,7 +97,33 @@ export default function CoursesPage() {
     };
 
     setFilters(updatedFilters);
-    await fetchCourses(updatedFilters);
+    await fetchMyCourses(updatedFilters);
+  }
+
+  async function handlePublish(id) {
+    try {
+      setActionLoadingId(id);
+      await courseService.publishCourse(id);
+      toast.success("Kurs başarıyla yayınlandı.");
+      await fetchMyCourses(filters);
+    } catch (error) {
+      toast.error(error.message || "Kurs yayınlanırken hata oluştu.");
+    } finally {
+      setActionLoadingId(null);
+    }
+  }
+
+  async function handleDelete(id) {
+    try {
+      setActionLoadingId(id);
+      await courseService.deleteCourse(id);
+      toast.success("Kurs başarıyla silindi.");
+      await fetchMyCourses(filters);
+    } catch (error) {
+      toast.error(error.message || "Kurs silinirken hata oluştu.");
+    } finally {
+      setActionLoadingId(null);
+    }
   }
 
   return (
@@ -109,12 +137,16 @@ export default function CoursesPage() {
       >
         <Box>
           <Typography variant="h4" fontWeight={700}>
-            Kurslar
+            Benim Kurslarım
           </Typography>
           <Typography variant="body1" color="text.secondary" mt={1}>
-            İlgi alanına göre kursları filtreleyip keşfedebilirsin.
+            Oluşturduğun kursları buradan yönetebilirsin.
           </Typography>
         </Box>
+
+        <Button variant="contained" component={Link} href="/courses/create">
+          Yeni Kurs Oluştur
+        </Button>
       </Stack>
 
       <Card
@@ -280,7 +312,12 @@ export default function CoursesPage() {
                   display: "flex",
                 }}
               >
-                <CourseCard course={course} />
+                <ManageCourseCard
+                  course={course}
+                  onPublish={handlePublish}
+                  onDelete={handleDelete}
+                  actionLoading={actionLoadingId === course.id}
+                />
               </Box>
             ))}
           </Box>

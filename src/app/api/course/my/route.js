@@ -1,18 +1,30 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(request) {
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json({ message: "Yetkisiz işlem" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const query = searchParams.toString();
 
-    const url = `${API_URL}/api/Course${query ? `?${query}` : ""}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${API_URL}/api/Course/my${query ? `?${query}` : ""}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      },
+    );
 
     const data = await response.json().catch(() => null);
 

@@ -93,6 +93,9 @@ export default function Navbar() {
                 <Button component={Link} href="/register" variant="contained">
                   Kayıt Ol
                 </Button>
+                <Button component={Link} href="/my-courses" color="inherit">
+                  My Courses
+                </Button>
               </>
             ) : (
               <>
