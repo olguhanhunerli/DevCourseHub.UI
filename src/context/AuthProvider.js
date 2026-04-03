@@ -12,14 +12,11 @@ export function AuthProvider({ children }) {
   async function fetchMe() {
     try {
       setLoading(true);
-      console.log("fetchMe başladı");
 
       const me = await authService.getMe();
-      console.log("fetchMe başarılı:", me);
 
       setUser(me);
     } catch (error) {
-      console.log("fetchMe hata:", error);
       setUser(null);
     } finally {
       setLoading(false);
@@ -27,7 +24,6 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    console.log("AuthProvider mount oldu");
     fetchMe();
   }, []);
 
