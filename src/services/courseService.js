@@ -35,7 +35,7 @@ export const courseService = {
     return apiFetch("/api/course/admin");
   },
   createCourse(payload) {
-    return apiFetch("/api/course/my/create", {
+    return apiFetch("/api/course", {
       method: "POST",
       body: JSON.stringify(payload),
     });

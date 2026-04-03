@@ -22,9 +22,7 @@ export default function Navbar() {
         >
           DevCourseHub
         </Typography>
-        <Typography variant="body2" color="inherit">
-          {JSON.stringify({ user, isAuthenticated, loading })}
-        </Typography>
+
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" spacing={2} alignItems="center">
