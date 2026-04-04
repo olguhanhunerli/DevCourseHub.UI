@@ -47,7 +47,7 @@ export default function Navbar() {
                 {user?.fullName || user?.email}
               </Typography>
 
-              <Button color="inherit" onClick={logout}>
+              <Button color="inherit" onClick={logout} href="/">
                 Çıkış Yap
               </Button>
             </>

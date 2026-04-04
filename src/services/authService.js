@@ -18,4 +18,9 @@ export const authService = {
       method: "GET",
     });
   },
+  logout() {
+    return apiFetch("/api/auth/logout", {
+      method: "POST",
+    });
+  },
 };

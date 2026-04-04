@@ -61,6 +61,22 @@ export default function CourseCard({ course }) {
         >
           {course.title}
         </Typography>
+        <Typography
+          variant="label"
+          fontWeight={700}
+          gutterBottom
+          sx={{
+            lineHeight: 1.3,
+            minHeight: "calc(1.3em * 2)",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            wordBreak: "break-word",
+          }}
+        >
+          {course.instructorName || "Eğitmen Bilgisi Yok"}
+        </Typography>
 
         <Box
           sx={{
