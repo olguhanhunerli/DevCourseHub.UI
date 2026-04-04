@@ -19,6 +19,11 @@ export default function ManageCourseCard({
   actionLoadingId,
 }) {
   const isLoading = actionLoadingId === course.id;
+  async function handleDelete() {
+    if (confirm("Bu kursu silmek istediğinize emin misiniz?")) {
+      await onDelete(course.id);
+    }
+  }
 
   return (
     <Card
@@ -137,7 +142,7 @@ export default function ManageCourseCard({
               variant="contained"
               color="error"
               fullWidth
-              onClick={() => onDelete(course.id)}
+              onClick={handleDelete}
               disabled={isLoading}
             >
               Sil

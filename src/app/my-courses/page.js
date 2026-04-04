@@ -113,18 +113,28 @@ export default function MyCoursesPage() {
     }
   }
 
-  async function handleDelete(id) {
+  const handleDeleteCourse = async (id) => {
     try {
       setActionLoadingId(id);
-      await courseService.deleteCourse(id);
+
+      const response = await fetch(`/api/course?id=${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Kurs silinemedi");
+      }
+
       toast.success("Kurs başarıyla silindi.");
       await fetchMyCourses(filters);
     } catch (error) {
-      toast.error(error.message || "Kurs silinirken hata oluştu.");
+      toast.error(error.message || "Bir hata oluştu");
     } finally {
       setActionLoadingId(null);
     }
-  }
+  };
 
   return (
     <Container sx={{ py: 6 }}>
@@ -315,7 +325,7 @@ export default function MyCoursesPage() {
                 <ManageCourseCard
                   course={course}
                   onPublish={handlePublish}
-                  onDelete={handleDelete}
+                  onDelete={handleDeleteCourse}
                   actionLoading={actionLoadingId === course.id}
                 />
               </Box>

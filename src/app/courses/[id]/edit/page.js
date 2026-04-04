@@ -1,58 +1,55 @@
-import { courseService } from "@/services/courseService";
-import { Box, Button, TextField } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
+"use client";
 
-export default function EditCoursePage({ params }) {
-  const { id } = params;
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { courseService } from "@/services/courseService";
+import CourseForm from "@/app/components/CourseForm";
+
+export default function EditCoursePage() {
+  const { id } = useParams();
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const data = await courseService.getCourseById(id);
+        setCourse(data);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    fetchCourse();
+  }, [id]);
+
+  const handleUpdate = async (formData) => {
+    setLoading(true);
     try {
-      await courseService.updateCourse(id, { title, description });
-
-      toast.success("Ders başarıyla güncellendi.");
-      router.push("/courses");
-    } catch (error) {
-      toast.error("Güncelleme sırasında bir hata oluştu.");
+      await courseService.updateCourse(id, formData);
+      router.push("/my-courses");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
+  if (pageLoading) return <div>Yükleniyor...</div>;
+  if (!course) return <div>Kurs bulunamadı</div>;
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{ mt: 2 }}
-      display="flex"
-      flexDirection="column"
-      maxWidth={400}
-    >
-      <TextField
-        label="Ders Adı"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Ders Açıklaması"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        fullWidth
-        margin="normal"
-        multiline
-        rows={4}
-      />
-      <Box mt={2}>
-        <Button type="submit" variant="contained">
-          Güncelle
-        </Button>
-      </Box>
-    </Box>
+    <CourseForm
+      mode="edit"
+      initialValues={{
+        title: course.title || "",
+        description: course.description || "",
+        category: course.category || "",
+        level: course.level || "",
+      }}
+      onSubmit={handleUpdate}
+      loading={loading}
+    />
   );
 }

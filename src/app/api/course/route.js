@@ -62,3 +62,36 @@ export async function POST(request) {
     return NextResponse.json({ message: "Sunucu hatası" }, { status: 500 });
   }
 }
+
+export async function DELETE(request) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json({ message: "Yetkisiz işlem" }, { status: 401 });
+    }
+    const id = request.nextUrl.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ message: "Geçersiz istek" }, { status: 400 });
+    }
+    const response = await fetch(`${API_URL}/api/Course/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { message: data?.message || "Kurs silinemedi" },
+        { status: response.status },
+      );
+    }
+    return NextResponse.json({ message: "Kurs silindi" });
+  } catch (error) {
+    return NextResponse.json({ message: "Sunucu hatası" }, { status: 500 });
+  }
+}
