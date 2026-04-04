@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   AppBar,
@@ -35,6 +35,23 @@ export default function Navbar() {
     router.push("/");
   };
 
+  async function getMe() {
+    try {
+      const response = await fetch("/api/auth/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const userData = await response.json();
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
+
+  useEffect(() => {
+    getMe();
+  }, []);
   return (
     <AppBar position="static" elevation={1}>
       <Toolbar>
@@ -71,10 +88,21 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Button component={Link} href="/my-courses" color="inherit">
-                Kurslarım
-              </Button>
-
+              {user?.role === "Admin" && (
+                <Button component={Link} href="/admin" color="inherit">
+                  Admin Paneli
+                </Button>
+              )}
+              {user?.role === "Instructor" || user?.role === "Admin" ? (
+                <Button component={Link} href="/my-courses" color="inherit">
+                  Kurslarım
+                </Button>
+              ) : null}
+              {user?.role === "Student" && (
+                <Button component={Link} href="/enrollments" color="inherit">
+                  Kayıtlı Kurslarım
+                </Button>
+              )}
               <Button color="inherit" onClick={handleOpen}>
                 {user?.fullName || user?.email}
               </Button>

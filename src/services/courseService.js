@@ -31,8 +31,18 @@ export const courseService = {
 
     return apiFetch(`/api/course/my${queryString ? `?${queryString}` : ""}`);
   },
-  getAdminCourses() {
-    return apiFetch("/api/course/admin");
+  getAdminCourses(params = {}) {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        searchParams.append(key, value);
+      }
+    });
+
+    const queryString = searchParams.toString();
+
+    return apiFetch(`/api/course/admin${queryString ? `?${queryString}` : ""}`);
   },
   createCourse(payload) {
     return apiFetch("/api/course", {
