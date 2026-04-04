@@ -28,9 +28,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   async function login(payload) {
-    console.log("login başladı");
     await authService.login(payload);
-    console.log("login başarılı, fetchMe çağrılıyor");
     await fetchMe();
   }
 

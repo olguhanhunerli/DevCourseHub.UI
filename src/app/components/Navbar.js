@@ -1,11 +1,39 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { AppBar, Box, Button, Toolbar, Typography, Stack } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Button,
+  Toolbar,
+  Typography,
+  Stack,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import { useAuthContext } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, loading } = useAuthContext();
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleClose();
+    logout();
+    router.push("/");
+  };
 
   return (
     <AppBar position="static" elevation={1}>
@@ -43,13 +71,25 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Typography variant="body2">
-                {user?.fullName || user?.email}
-              </Typography>
-
-              <Button color="inherit" onClick={logout} href="/">
-                Çıkış Yap
+              <Button component={Link} href="/my-courses" color="inherit">
+                Kurslarım
               </Button>
+
+              <Button color="inherit" onClick={handleOpen}>
+                {user?.fullName || user?.email}
+              </Button>
+
+              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                <MenuItem
+                  component={Link}
+                  href="/profile"
+                  onClick={handleClose}
+                >
+                  Profil
+                </MenuItem>
+
+                <MenuItem onClick={handleLogout}>Çıkış Yap</MenuItem>
+              </Menu>
             </>
           )}
         </Stack>
