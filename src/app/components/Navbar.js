@@ -71,6 +71,9 @@ export default function Navbar() {
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" spacing={2} alignItems="center">
+          <Button component={Link} href="/courses" color="inherit">
+            Kurslar
+          </Button>
           {loading ? null : !isAuthenticated ? (
             <>
               <Button component={Link} href="/login" color="inherit">

@@ -15,7 +15,7 @@ function getUserRoleFromToken(token) {
   }
 }
 
-export function middleware(request) {
+export function proxy(request) {
   const token = request.cookies.get("token")?.value;
   const { pathname } = request.nextUrl;
 
