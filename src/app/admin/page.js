@@ -32,12 +32,12 @@ export default function MyCoursesPage() {
     Category: "",
     Level: "",
     PageNumber: 1,
-    PageSize: 6,
+    PageSize: 10,
   });
 
   const [pagination, setPagination] = useState({
     pageNumber: 1,
-    pageSize: 6,
+    pageSize: 10,
     totalCount: 0,
     totalPages: 1,
   });
@@ -50,7 +50,7 @@ export default function MyCoursesPage() {
       setCourses(data?.items || []);
       setPagination({
         pageNumber: data?.pageNumber || 1,
-        pageSize: data?.pageSize || 6,
+        pageSize: data?.pageSize || 10,
         totalCount: data?.totalCount || 0,
         totalPages: data?.totalPages || 1,
       });
@@ -83,7 +83,7 @@ export default function MyCoursesPage() {
       Category: "",
       Level: "",
       PageNumber: 1,
-      PageSize: 6,
+      PageSize: 10,
     };
 
     setFilters(clearedFilters);

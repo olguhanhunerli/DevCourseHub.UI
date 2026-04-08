@@ -92,7 +92,7 @@ export default function Navbar() {
           ) : (
             <>
               {user?.role === "Admin" && (
-                <Button component={Link} href="/admin" color="inherit">
+                <Button component={Link} href="/adminDashboard" color="inherit">
                   Admin Paneli
                 </Button>
               )}
