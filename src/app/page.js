@@ -16,13 +16,12 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import FeaturedCoursesSlider from "./components/FeaturedCoursesSlider";
 import { useCoursesContext } from "@/context/CourseProvider";
+import CategorySlider from "./components/FeaturedCategorySlider";
 
 export default function HomePage() {
   const { courses, coursesLoading } = useCoursesContext();
 
   const featuredCourses = courses.slice(0, 6);
-
-  const categories = [...new Set(courses.map((course) => course.category))];
 
   const benefits = [
     {
@@ -108,7 +107,17 @@ export default function HomePage() {
           </Button>
         </Stack>
       </Box>
+      <Box mb={8}>
+        <Typography variant="h4" fontWeight={700} mb={1}>
+          Kategorilere Göz At
+        </Typography>
 
+        <Typography variant="body1" color="text.secondary" mb={3}>
+          İlgi alanına göre kursları keşfet ve sana en uygun yolu seç.
+        </Typography>
+
+        <CategorySlider />
+      </Box>
       <Box mb={8}>
         <Typography variant="h4" fontWeight={700} mb={1}>
           Öne Çıkan Kurslar
@@ -125,34 +134,6 @@ export default function HomePage() {
         ) : (
           <FeaturedCoursesSlider courses={featuredCourses} />
         )}
-      </Box>
-
-      <Box mb={8}>
-        <Typography variant="h4" fontWeight={700} mb={1}>
-          Kategorilere Göz At
-        </Typography>
-
-        <Typography variant="body1" color="text.secondary" mb={3}>
-          İlgi alanına göre kursları keşfet ve sana en uygun yolu seç.
-        </Typography>
-
-        <Box display="flex" flexWrap="wrap" gap={2}>
-          {categories.map((category) => (
-            <Chip
-              key={category}
-              label={category}
-              clickable
-              component={Link}
-              href="/courses"
-              sx={{
-                px: 1,
-                py: 2.5,
-                fontSize: "0.95rem",
-                borderRadius: 999,
-              }}
-            />
-          ))}
-        </Box>
       </Box>
 
       <Box mb={4}>

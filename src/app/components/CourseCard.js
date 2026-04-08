@@ -87,7 +87,7 @@ export default function CourseCard({ course }) {
             mb: 2,
           }}
         >
-          <Chip label={course.category || "Kategori Yok"} size="small" />
+          <Chip label={course.categoryName || "Kategori Yok"} size="small" />
           <Chip label={course.level || "Seviye Yok"} size="small" />
         </Box>
 

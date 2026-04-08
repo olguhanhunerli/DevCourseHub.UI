@@ -16,7 +16,10 @@ export function CoursesProvider({ children }) {
 
     try {
       setCoursesLoading(true);
-      const data = await courseService.getCourses();
+      const data = await courseService.getCourses({
+        pageNumber: 1,
+        pageSize: 6,
+      });
       setCourses(data.items || []);
       setCoursesLoaded(true);
     } catch (error) {
